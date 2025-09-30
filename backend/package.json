@@ -1,0 +1,39 @@
+{
+  "name": "mycampushub-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "build": "echo 'No build step required for Node.js'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js",
+    "db:deploy": "prisma db push && node prisma/seed.js",
+    "sessions:view": "node scripts/viewSessions.js",
+    "sessions:cleanup": "node scripts/cleanupSessions.js"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "author": "Adarsh Priydarshi",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^6.16.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.20.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.5",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.16.1"
+  },
+  "keywords": []
+}

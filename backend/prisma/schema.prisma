@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id                Int       @id @default(autoincrement())
+  name              String
+  email             String    @unique
+  password          String
+  provider          String?   @default("local")
+  rollNumber        String?
+  branch            String?
+  semester          String?
+  section           String?
+  skills            String?   @db.Text
+  achievements      String?   @db.Text
+  profileImage      String?   @db.Text
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  emailVerified     Boolean   @default(false)
+  verificationToken String?
+  createdAt         DateTime  @default(now())
+  sessions          session[]
+}
+
+model session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique @db.VarChar(500)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  lastUsed  DateTime @default(now())
+  
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([token])
+}
+
+model teacher {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  department    String?
+  designation   String?
+  qualification String?
+  experience    String?
+  phone         String?
+  linkedin      String?
+  specialization String?  @db.Text
+  bio           String?   @db.Text
+  officeHours   String?
+  researchAreas String?   @db.Text
+  subjects      subject[] @relation("TeacherSubjects")
+  labSubjects   subject[] @relation("LabTeacherSubjects")
+}
+
+model semester {
+  id          Int       @id @default(autoincrement())
+  name        String?
+  description String?   @db.Text
+  credits     Int?
+  duration    String?
+  subjects    subject[]
+}
+
+model subject {
+  id              Int      @id @default(autoincrement())
+  name            String
+  semesterId      Int
+  teacherId       Int?
+  labTeacherId    Int?
+  code            String?
+  credits         Int?
+  syllabus        String?  @db.Text
+  topics          String?  @db.Text
+  examDetails     String?  @db.Text
+  roadmap         String?  @db.Text
+  prerequisites   String?
+  learningOutcomes String? @db.Text
+  
+  semester        semester @relation(fields: [semesterId], references: [id])
+  teacher         teacher? @relation("TeacherSubjects", fields: [teacherId], references: [id])
+  labTeacher      teacher? @relation("LabTeacherSubjects", fields: [labTeacherId], references: [id])
+}
+
+model exam {
+  id         Int       @id @default(autoincrement())
+  semesterId Int
+  type       String
+  date       DateTime?
+}
+
+model timetable {
+  id         Int @id @default(autoincrement())
+  semesterId Int
+}
+
+model hostel {
+  id   Int     @id @default(autoincrement())
+  name String? @db.Text
+}
+
+model mess {
+  id        Int     @id @default(autoincrement())
+  day       String?
+  breakfast String? @db.Text
+  lunch     String? @db.Text
+  dinner    String? @db.Text
+  menu      String? @db.Text
+}
+
+model event {
+  id          Int       @id @default(autoincrement())
+  title       String?
+  date        DateTime?
+  time        String?
+  venue       String?
+  description String?   @db.Text
+  organizer   String?
+  category    String?
+  imageUrl    String?
+}
+
+model college {
+  id   Int     @id @default(autoincrement())
+  name String?
+  info String? @db.Text
+}
