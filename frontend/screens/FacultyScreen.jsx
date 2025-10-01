@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { fetchFaculty } from '../services/api';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import AnimatedCard from '../components/AnimatedCard';
 const FacultyScreen = ({ navigation }) => {
@@ -156,11 +157,12 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
   },
   listContainer: {
-    paddingBottom: spacing.xl,
+    paddingBottom: rs(spacing.xl),
   },
   facultyCard: {
-    marginBottom: spacing.md,
-    padding: spacing.lg,
+    width: '100%',
+    marginBottom: rs(spacing.md),
+    padding: rs(spacing.lg),
   },
   facultyInfo: {
     gap: spacing.sm,

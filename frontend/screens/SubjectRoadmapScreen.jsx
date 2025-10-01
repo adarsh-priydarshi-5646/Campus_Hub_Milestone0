@@ -12,7 +12,8 @@ import {
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchSubjects } from '../services/api';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
@@ -353,17 +354,17 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   semesterStatsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '100%',
-    marginTop: spacing.md,
-    gap: spacing.sm,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginTop: rs(spacing.md),
   },
   semesterStatCard: {
-    flex: 1,
+    width: isSmallScreen ? '48%' : '23.5%',
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    padding: spacing.md,
-    borderRadius: 16,
+    padding: rs(spacing.md),
+    borderRadius: normalize(16),
     alignItems: 'center',
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 4 },
@@ -372,6 +373,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderWidth: 1,
     borderColor: 'rgba(99, 102, 241, 0.1)',
+    marginBottom: rs(spacing.md),
   },
   semesterStatNumber: {
     ...typography.h2,
@@ -389,7 +391,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subjectCard: {
-    marginBottom: spacing.xl,
+    width: '100%',
+    marginBottom: rs(spacing.xl),
     padding: 0,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -399,7 +402,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   cardGradient: {
-    padding: spacing.lg,
+    width: '100%',
+    padding: rs(spacing.lg),
   },
   cardHeader: {
     flexDirection: 'row',
@@ -606,8 +610,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   roadmapSection: {
-    marginTop: spacing.md,
-    borderRadius: 20,
+    width: '135%',
+    marginTop: rs(spacing.md),
+    marginLeft: '-17.5%',
+    borderRadius: normalize(20),
     overflow: 'hidden',
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 6 },
@@ -616,7 +622,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   roadmapGradient: {
-    padding: spacing.lg,
+    width: '100%',
+    padding: rs(spacing.xl),
   },
   roadmapHeader: {
     flexDirection: 'row',

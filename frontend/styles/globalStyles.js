@@ -9,14 +9,16 @@ export const colors = {
   secondary: '#7c3aed',
   success: '#16a34a',
   warning: '#f59e0b',
+  danger: '#dc2626',
   error: '#dc2626',
+  info: '#0ea5e9',
   background: '#ffffff',
   surface: '#ffffff',
   surfaceSecondary: '#f5f5f5',
   text: {
-    primary: '#000000',
-    secondary: '#333333',
-    light: '#666666',
+    primary: '#1f2937',
+    secondary: '#6b7280',
+    light: '#9ca3af',
     white: '#ffffff',
   },
   border: '#e5e7eb',
@@ -309,8 +311,61 @@ export const globalStyles = StyleSheet.create({
   },
 });
 
+// Screen dimensions and breakpoints
 export const screenWidth = width;
 export const screenHeight = height;
 export const isSmallScreen = width < 375;
 export const isMediumScreen = width >= 375 && width < 414;
 export const isLargeScreen = width >= 414;
+export const isTablet = width >= 768;
+export const isDesktop = width >= 1024;
+
+// Responsive spacing
+export const responsiveSpacing = {
+  xs: isSmallScreen ? 3 : spacing.xs,
+  sm: isSmallScreen ? 6 : spacing.sm,
+  md: isSmallScreen ? 12 : spacing.md,
+  lg: isSmallScreen ? 18 : spacing.lg,
+  xl: isSmallScreen ? 24 : spacing.xl,
+  xxl: isSmallScreen ? 36 : spacing.xxl,
+};
+
+// Responsive typography
+export const responsiveTypography = {
+  h1: {
+    fontSize: isSmallScreen ? 24 : isMediumScreen ? 28 : 32,
+    fontWeight: '800',
+    lineHeight: isSmallScreen ? 32 : isMediumScreen ? 36 : 40,
+    letterSpacing: -0.5,
+  },
+  h2: {
+    fontSize: isSmallScreen ? 20 : isMediumScreen ? 24 : 28,
+    fontWeight: '700',
+    lineHeight: isSmallScreen ? 28 : isMediumScreen ? 32 : 36,
+    letterSpacing: -0.3,
+  },
+  h3: {
+    fontSize: isSmallScreen ? 18 : isMediumScreen ? 20 : 24,
+    fontWeight: '700',
+    lineHeight: isSmallScreen ? 26 : isMediumScreen ? 28 : 32,
+    letterSpacing: -0.2,
+  },
+  h4: {
+    fontSize: isSmallScreen ? 16 : isMediumScreen ? 18 : 20,
+    fontWeight: '600',
+    lineHeight: isSmallScreen ? 24 : isMediumScreen ? 26 : 28,
+    letterSpacing: -0.1,
+  },
+  body: {
+    fontSize: isSmallScreen ? 14 : 16,
+    fontWeight: '400',
+    lineHeight: isSmallScreen ? 22 : 26,
+    letterSpacing: 0.1,
+  },
+  bodySmall: {
+    fontSize: isSmallScreen ? 12 : 14,
+    fontWeight: '400',
+    lineHeight: isSmallScreen ? 18 : 22,
+    letterSpacing: 0.1,
+  },
+};

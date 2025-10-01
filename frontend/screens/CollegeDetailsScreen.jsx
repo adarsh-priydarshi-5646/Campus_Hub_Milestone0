@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { fetchCollegeDetails } from '../services/api';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
@@ -478,19 +479,20 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
   },
   facilitiesGrid: {
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: spacing.md,
   },
   facilityItem: {
-    width: '48%',
+    width: isSmallScreen ? '48%' : '48.5%',
     backgroundColor: colors.background,
-    borderRadius: 16,
-    padding: spacing.md,
+    borderRadius: normalize(16),
+    padding: rs(spacing.md),
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border,
+    marginBottom: rs(spacing.md),
   },
   facilityIconContainer: {
     width: 50,

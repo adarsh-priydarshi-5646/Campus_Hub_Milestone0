@@ -7,9 +7,13 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  Animated
+  Animated,
+  TouchableOpacity
 } from 'react-native';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import Button3D from '../components/3DButton';
 import Card3D from '../components/3DCard';
 import Icon3D from '../components/3DIcon';
@@ -56,12 +60,9 @@ const WelcomeScreen = ({ navigation }) => {
               }
             ]}
           >
-            <Icon3D 
-              emoji="🎓" 
-              size="xxl" 
-              variant="primary" 
-              style={styles.logoIcon}
-            />
+            <View style={styles.logoContainer}>
+              <Ionicons name="school" size={72} color={colors.text.white} />
+            </View>
             <Text style={styles.title}>MyCampusHub</Text>
             <Text style={styles.subtitle}>Your Complete Campus Management Solution</Text>
             <Text style={styles.description}>
@@ -72,90 +73,132 @@ const WelcomeScreen = ({ navigation }) => {
         {/* Features Grid */}
         <View style={[styles.featuresSection, styles.maxWidth] }>
           <Text style={styles.sectionTitle}>Why Choose MyCampusHub?</Text>
-          <View style={styles.featuresGrid}>
-            <Card3D variant="primary" elevation="medium" style={styles.featureCard}>
-              <Icon3D emoji="📚" size="large" variant="primary" style={styles.featureIcon} />
+          
+          {/* Row 1 */}
+          <View style={styles.featureRow}>
+            <View style={styles.featureCard}>
+              <View style={[styles.featureIconContainer, {backgroundColor: '#dbeafe'}]}>
+                <Ionicons name="book" size={40} color="#3b82f6" />
+              </View>
               <Text style={styles.featureTitle}>Academic Resources</Text>
               <Text style={styles.featureDescription}>Access study materials, roadmaps, and exam schedules</Text>
-            </Card3D>
-            <Card3D variant="success" elevation="medium" style={styles.featureCard}>
-              <Icon3D emoji="👨‍🏫" size="large" variant="success" style={styles.featureIcon} />
+            </View>
+            <View style={styles.featureCard}>
+              <View style={[styles.featureIconContainer, {backgroundColor: '#d1fae5'}]}>
+                <FontAwesome5 name="chalkboard-teacher" size={36} color="#10b981" />
+              </View>
               <Text style={styles.featureTitle}>Faculty Directory</Text>
               <Text style={styles.featureDescription}>Connect with expert teachers and get guidance</Text>
-            </Card3D>
-            <Card3D variant="warning" elevation="medium" style={styles.featureCard}>
-              <Icon3D emoji="📅" size="large" variant="warning" style={styles.featureIcon} />
-              <Text style={styles.featureTitle}>Event Updates</Text>
-              <Text style={styles.featureDescription}>Stay updated with campus events and announcements</Text>
-            </Card3D>
-            <Card3D variant="danger" elevation="medium" style={styles.featureCard}>
-              <Icon3D emoji="🍽️" size="large" variant="danger" style={styles.featureIcon} />
-              <Text style={styles.featureTitle}>Mess Menu</Text>
-              <Text style={styles.featureDescription}>Check daily meal plans and dining options</Text>
-            </Card3D>
-            <Card3D variant="primary" elevation="medium" style={styles.featureCard}>
-              <Icon3D emoji="🏫" size="large" variant="primary" style={styles.featureIcon} />
-              <Text style={styles.featureTitle}>College Info</Text>
-              <Text style={styles.featureDescription}>Complete college details and facilities</Text>
-            </Card3D>
-            <Card3D variant="success" elevation="medium" style={styles.featureCard}>
-              <Icon3D emoji="🏠" size="large" variant="success" style={styles.featureIcon} />
-              <Text style={styles.featureTitle}>Hostel Details</Text>
-              <Text style={styles.featureDescription}>Hostel facilities and accommodation info</Text>
-            </Card3D>
-          </View>
+            </View>
           </View>
           
-        {/* Stats Section */}
-        <Card3D variant="gradient" elevation="high" style={[styles.statsSection, styles.maxWidth]}>
-          <Text style={styles.statsTitle}>📊 Campus Statistics</Text>
-          <View style={styles.statsGrid}>
-            <View style={styles.statItem}>
-              <Icon3D emoji="👨‍🏫" size="medium" variant="primary" />
-              <Text style={styles.statNumber}>6+</Text>
-              <Text style={styles.statLabel}>Expert Faculty</Text>
+          {/* Row 2 */}
+          <View style={styles.featureRow}>
+            <View style={styles.featureCard}>
+              <View style={[styles.featureIconContainer, {backgroundColor: '#fef3c7'}]}>
+                <Ionicons name="calendar" size={40} color="#f59e0b" />
+              </View>
+              <Text style={styles.featureTitle}>Event Updates</Text>
+              <Text style={styles.featureDescription}>Stay updated with campus events and announcements</Text>
             </View>
-            <View style={styles.statItem}>
-              <Icon3D emoji="📚" size="medium" variant="success" />
-              <Text style={styles.statNumber}>12+</Text>
-              <Text style={styles.statLabel}>Subjects</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Icon3D emoji="👥" size="medium" variant="warning" />
-              <Text style={styles.statNumber}>100+</Text>
-              <Text style={styles.statLabel}>Students</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Icon3D emoji="🛠️" size="medium" variant="danger" />
-              <Text style={styles.statNumber}>24/7</Text>
-              <Text style={styles.statLabel}>Support</Text>
+            <View style={styles.featureCard}>
+              <View style={[styles.featureIconContainer, {backgroundColor: '#fecaca'}]}>
+                <Ionicons name="restaurant" size={40} color="#ef4444" />
+              </View>
+              <Text style={styles.featureTitle}>Mess Menu</Text>
+              <Text style={styles.featureDescription}>Check daily meal plans and dining options</Text>
             </View>
           </View>
-        </Card3D>
+          
+          {/* Row 3 */}
+          <View style={styles.featureRow}>
+            <View style={styles.featureCard}>
+              <View style={[styles.featureIconContainer, {backgroundColor: '#e0e7ff'}]}>
+                <MaterialIcons name="business" size={40} color="#6366f1" />
+              </View>
+              <Text style={styles.featureTitle}>College Info</Text>
+              <Text style={styles.featureDescription}>Complete college details and facilities</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <View style={[styles.featureIconContainer, {backgroundColor: '#ddd6fe'}]}>
+                <MaterialCommunityIcons name="home-city" size={40} color="#8b5cf6" />
+              </View>
+              <Text style={styles.featureTitle}>Hostel Details</Text>
+              <Text style={styles.featureDescription}>Hostel facilities and accommodation info</Text>
+            </View>
+          </View>
+        </View>
+          
+        {/* Stats Section */}
+        <View style={[styles.statsSection, styles.maxWidth]}>
+          <LinearGradient
+            colors={[colors.primary, '#8b5cf6']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.statsGradient}
+          >
+            <View style={styles.statsTitleContainer}>
+              <MaterialIcons name="analytics" size={24} color={colors.text.white} style={{marginRight: 8}} />
+              <Text style={styles.statsTitle}>Campus Statistics</Text>
+            </View>
+            <View style={styles.statsGrid}>
+              <View style={styles.statItem}>
+                <View style={styles.statIconContainer}>
+                  <FontAwesome5 name="chalkboard-teacher" size={28} color="#3b82f6" />
+                </View>
+                <Text style={styles.statNumber}>6+</Text>
+                <Text style={styles.statLabel}>Expert Faculty</Text>
+              </View>
+              <View style={styles.statItem}>
+                <View style={styles.statIconContainer}>
+                  <Ionicons name="book" size={28} color="#10b981" />
+                </View>
+                <Text style={styles.statNumber}>12+</Text>
+                <Text style={styles.statLabel}>Subjects</Text>
+              </View>
+              <View style={styles.statItem}>
+                <View style={styles.statIconContainer}>
+                  <Ionicons name="people" size={28} color="#f59e0b" />
+                </View>
+                <Text style={styles.statNumber}>100+</Text>
+                <Text style={styles.statLabel}>Students</Text>
+              </View>
+              <View style={styles.statItem}>
+                <View style={styles.statIconContainer}>
+                  <MaterialIcons name="support-agent" size={28} color="#ef4444" />
+                </View>
+                <Text style={styles.statNumber}>24/7</Text>
+                <Text style={styles.statLabel}>Support</Text>
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
 
         {/* CTA Section */}
-        <Card3D variant="primary" elevation="ultra" style={[styles.ctaSection, styles.maxWidth]}>
+        <View style={[styles.ctaSection, styles.maxWidth]}>
           <Text style={styles.ctaTitle}>Ready to Get Started?</Text>
           <Text style={styles.ctaSubtitle}>Join thousands of students already using MyCampusHub</Text>
           
           <View style={styles.buttonContainer}>
-            <Button3D 
-              title="Sign In"
+            <TouchableOpacity 
               onPress={() => navigation.navigate('Login')}
-              variant="primary"
-              size="large"
               style={styles.primaryButton}
-            />
+              activeOpacity={0.8}
+            >
+              <Ionicons name="log-in" size={20} color={colors.text.white} style={{marginRight: 8}} />
+              <Text style={styles.primaryButtonText}>Sign In</Text>
+            </TouchableOpacity>
             
-            <Button3D 
-              title="Create Account"
+            <TouchableOpacity 
               onPress={() => navigation.navigate('Signup')}
-              variant="secondary"
-              size="large"
               style={styles.secondaryButton}
-            />
+              activeOpacity={0.8}
+            >
+              <Ionicons name="person-add" size={20} color={colors.primary} style={{marginRight: 8}} />
+              <Text style={styles.secondaryButtonText}>Create Account</Text>
+            </TouchableOpacity>
           </View>
-        </Card3D>
+        </View>
 
         {/* Footer */}
         <View style={[styles.footer, styles.maxWidth]}>
@@ -164,14 +207,6 @@ const WelcomeScreen = ({ navigation }) => {
         </View>
       </ScrollView>
       
-      {/* Floating Action Button */}
-      <FloatingActionButton
-        icon="💬"
-        onPress={() => navigation.navigate('Login')}
-        variant="primary"
-        size="large"
-        position="bottomRight"
-      />
       </AnimatedBackground>
     </SafeAreaView>
   );
@@ -180,161 +215,278 @@ const WelcomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   maxWidth: {
     width: '100%',
-    maxWidth: 960,
     alignSelf: 'center',
   },
   scrollContainer: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.xxl,
+    paddingBottom: rs(spacing.xxl),
   },
   heroSection: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xxl,
+    width: '100%',
+    paddingHorizontal: rs(spacing.lg),
+    paddingVertical: rs(spacing.xxl),
     alignItems: 'center',
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
+    borderBottomLeftRadius: normalize(32),
+    borderBottomRightRadius: normalize(32),
   },
-  logoIcon: {
-    marginBottom: spacing.lg,
+  logoContainer: {
+    width: normalize(140),
+    height: normalize(140),
+    borderRadius: normalize(70),
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: rs(spacing.lg),
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 16,
   },
   title: {
-    ...typography.h1,
+    ...responsiveTypography.h1,
     color: colors.text.primary,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: rs(spacing.sm),
     fontWeight: '900',
   },
   subtitle: {
-    ...typography.h4,
+    ...responsiveTypography.h4,
     color: colors.primaryLight,
     textAlign: 'center',
-    marginBottom: spacing.md,
+    marginBottom: rs(spacing.md),
     fontWeight: '600',
   },
   description: {
-    ...typography.body,
+    ...responsiveTypography.body,
     color: colors.text.primary,
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: normalize(24),
     opacity: 0.9,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: rs(spacing.md),
   },
   featuresSection: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xxl,
+    width: '100%',
+    paddingHorizontal: rs(spacing.lg),
+    paddingVertical: rs(spacing.xxl),
   },
   sectionTitle: {
-    ...typography.h3,
+    ...responsiveTypography.h3,
     color: colors.text.primary,
     textAlign: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: rs(spacing.xl),
     fontWeight: '800',
   },
-  featuresGrid: {
+  featureRow: {
+    width: '100%',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     justifyContent: 'space-between',
+    marginBottom: rs(spacing.lg),
   },
   featureCard: {
-    width: (width - spacing.lg * 2 - spacing.md) / 2,
-    marginBottom: spacing.lg,
+    width: isSmallScreen ? '100%' : '48.5%',
+    backgroundColor: colors.surface,
+    borderRadius: normalize(20),
+    padding: rs(spacing.lg),
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+    marginBottom: isSmallScreen ? rs(spacing.md) : 0,
   },
-  featureIcon: {
-    marginBottom: spacing.md,
+  featureIconContainer: {
+    width: normalize(80),
+    height: normalize(80),
+    borderRadius: normalize(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: rs(spacing.md),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 4,
   },
   featureTitle: {
-    ...typography.h5,
+    ...responsiveTypography.h4,
     color: colors.text.primary,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: rs(spacing.sm),
     fontWeight: '700',
   },
   featureDescription: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.text.secondary,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: normalize(20),
   },
   statsSection: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.xl,
+    width: '100%',
+    marginHorizontal: rs(spacing.lg),
+    marginBottom: rs(spacing.xl),
+    borderRadius: normalize(20),
+    overflow: 'hidden',
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  statsGradient: {
+    padding: rs(spacing.xl),
+  },
+  statsTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: rs(spacing.lg),
   },
   statsTitle: {
-    ...typography.h4,
-    color: colors.primary,
+    ...responsiveTypography.h4,
+    color: colors.text.white,
     textAlign: 'center',
-    marginBottom: spacing.lg,
     fontWeight: '700',
   },
+  statIconContainer: {
+    width: normalize(60),
+    height: normalize(60),
+    borderRadius: normalize(30),
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: rs(spacing.sm),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
   statsGrid: {
+    width: '100%',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-around',
+    gap: rs(spacing.sm),
   },
   statItem: {
     alignItems: 'center',
+    width: isSmallScreen ? '48%' : '23%',
+    minWidth: isSmallScreen ? '45%' : '20%',
+    marginBottom: rs(spacing.sm),
   },
   statNumber: {
-    ...typography.h2,
-    color: colors.primary,
+    ...responsiveTypography.h2,
+    color: colors.text.white,
     fontWeight: '900',
-    marginBottom: spacing.xs,
+    marginBottom: rs(spacing.xs),
   },
   statLabel: {
-    ...typography.bodySmall,
-    color: colors.text.primary,
+    ...responsiveTypography.bodySmall,
+    color: colors.text.white,
     fontWeight: '600',
     textAlign: 'center',
+    opacity: 0.9,
   },
   ctaSection: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
+    width: '100%',
+    backgroundColor: colors.surface,
+    borderRadius: normalize(20),
+    paddingHorizontal: rs(spacing.lg),
+    paddingVertical: rs(spacing.xl),
     alignItems: 'center',
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.xl,
+    marginHorizontal: rs(spacing.lg),
+    marginBottom: rs(spacing.xl),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   ctaTitle: {
-    ...typography.h3,
+    ...responsiveTypography.h3,
     color: colors.text.primary,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: rs(spacing.sm),
     fontWeight: '800',
   },
   ctaSubtitle: {
-    ...typography.body,
+    ...responsiveTypography.body,
     color: colors.text.secondary,
     textAlign: 'center',
-    marginBottom: spacing.xl,
-    lineHeight: 24,
+    marginBottom: rs(spacing.xl),
+    lineHeight: normalize(24),
   },
   buttonContainer: {
     width: '100%',
-    gap: spacing.md,
+    gap: rs(spacing.md),
   },
   primaryButton: {
-    marginBottom: spacing.md,
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: colors.primary,
+    paddingVertical: rs(spacing.md + 4),
+    borderRadius: normalize(16),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: rs(spacing.md),
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  primaryButtonText: {
+    ...responsiveTypography.body,
+    color: colors.text.white,
+    fontWeight: '700',
+    fontSize: normalize(16),
   },
   secondaryButton: {
-    marginBottom: spacing.md,
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: colors.surface,
+    paddingVertical: rs(spacing.md + 4),
+    borderRadius: normalize(16),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: colors.primary,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  secondaryButtonText: {
+    ...responsiveTypography.body,
+    color: colors.primary,
+    fontWeight: '700',
+    fontSize: normalize(16),
   },
   footer: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
+    width: '100%',
+    paddingHorizontal: rs(spacing.lg),
+    paddingVertical: rs(spacing.xl),
     alignItems: 'center',
-    marginTop: spacing.xl,
+    marginTop: rs(spacing.xl),
   },
   footerText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.text.light,
     textAlign: 'center',
-    marginBottom: spacing.xs,
+    marginBottom: rs(spacing.xs),
   },
   footerSubtext: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.text.light,
     textAlign: 'center',
     fontStyle: 'italic',

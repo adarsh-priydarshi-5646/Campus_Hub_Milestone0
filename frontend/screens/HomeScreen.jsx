@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { fetchSemesters } from '../services/api';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import AnimatedButton from '../components/AnimatedButton';
 import AnimatedCard from '../components/AnimatedCard';
@@ -582,25 +583,28 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   gridContainer: {
-    marginBottom: spacing.xl,
-    paddingHorizontal: spacing.lg,
+    width: '100%',
+    marginBottom: rs(spacing.xl),
+    paddingHorizontal: rs(spacing.lg),
   },
   gridRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: spacing.lg,
     width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    justifyContent: 'space-between',
+    marginBottom: rs(spacing.lg),
   },
   cardWrapper: {
-    flex: 1,
-    marginHorizontal: spacing.xs,
+    width: isSmallScreen ? '100%' : '48.5%',
+    marginBottom: isSmallScreen ? rs(spacing.md) : 0,
   },
   quickAccessCard: {
+    width: '100%',
     alignItems: 'center',
-    padding: spacing.lg,
-    height: 180,
+    padding: rs(spacing.lg),
+    minHeight: normalize(180),
     backgroundColor: colors.surface,
-    borderRadius: 20,
+    borderRadius: normalize(20),
     borderWidth: 2,
     borderColor: colors.borderLight,
     shadowColor: colors.shadow.medium,
@@ -614,7 +618,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     overflow: 'hidden',
-    width: '100%',
   },
   quickAccessIcon: {
     fontSize: 36,

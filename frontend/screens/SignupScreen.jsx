@@ -13,12 +13,14 @@ import {
   Alert
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, responsiveSpacing, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import Button3D from '../components/3DButton';
 import Card3D from '../components/3DCard';
 import Icon3D from '../components/3DIcon';
 import AnimatedBackground from '../components/AnimatedBackground';
+import Toast from '../components/Toast';
 import { useAuth } from '../contexts/AuthContext';
 
 const SignupScreen = ({ navigation }) => {
@@ -29,6 +31,9 @@ const SignupScreen = ({ navigation }) => {
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
   const { register } = useAuth();
 
   const validateEmail = (email) => {
@@ -66,7 +71,7 @@ const SignupScreen = ({ navigation }) => {
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      Alert.alert('Validation Error', Object.values(newErrors)[0]);
+      setToast({ visible: true, message: Object.values(newErrors)[0], type: 'error' });
       return;
     }
 
@@ -75,10 +80,10 @@ const SignupScreen = ({ navigation }) => {
     setLoading(false);
 
     if (result.success) {
-      Alert.alert('Success', 'Account created successfully! Welcome to MyCampusHub!');
-      setTimeout(() => navigation.replace('Home'), 500);
+      setToast({ visible: true, message: 'Account created successfully! Welcome to MyCampusHub!', type: 'success' });
+      setTimeout(() => navigation.replace('Home'), 1500);
     } else {
-      Alert.alert('Signup Failed', result.error || 'Unable to create account. Please try again.');
+      setToast({ visible: true, message: result.error || 'Unable to create account. Please try again.', type: 'error' });
     }
   };
 
@@ -87,6 +92,12 @@ const SignupScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={globalStyles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <Toast 
+        visible={toast.visible} 
+        message={toast.message} 
+        type={toast.type}
+        onHide={() => setToast({ ...toast, visible: false })}
+      />
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={globalStyles.container}
@@ -105,7 +116,7 @@ const SignupScreen = ({ navigation }) => {
             {/* Header Section */}
             <View style={styles.headerSection}>
               <View style={styles.logoContainer}>
-                <Ionicons name="school" size={48} color={colors.primary} />
+                <Ionicons name="school" size={56} color={colors.text.white} />
               </View>
               <Text style={styles.title}>Create Account</Text>
               <Text style={styles.subtitle}>Join MyCampusHub and start your journey</Text>
@@ -119,11 +130,17 @@ const SignupScreen = ({ navigation }) => {
               
               <View style={styles.formSection}>
                 <View style={styles.inputGroup}>
-                  <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xs}}>
+                  <View style={styles.labelContainer}>
                     <Ionicons name="person" size={16} color={colors.text.secondary} style={{marginRight: 6}} />
                     <Text style={styles.inputLabel}>Full Name</Text>
                   </View>
                   <View style={styles.inputContainer}>
+                    <Ionicons 
+                      name="person" 
+                      size={20} 
+                      color={focusedInput === 'name' ? colors.primary : colors.text.light} 
+                      style={styles.inputIcon}
+                    />
                     <TextInput 
                       placeholder="Enter your full name" 
                       placeholderTextColor={colors.text.light}
@@ -134,6 +151,7 @@ const SignupScreen = ({ navigation }) => {
                       }} 
                       style={[
                         styles.textInput,
+                        styles.textInputWithIcon,
                         focusedInput === 'name' && styles.inputFocused,
                         errors.name && styles.inputError
                       ]}
@@ -148,11 +166,17 @@ const SignupScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.inputGroup}>
-                  <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xs}}>
+                  <View style={styles.labelContainer}>
                     <MaterialIcons name="email" size={16} color={colors.text.secondary} style={{marginRight: 6}} />
                     <Text style={styles.inputLabel}>Email Address</Text>
                   </View>
                   <View style={styles.inputContainer}>
+                    <Ionicons 
+                      name="mail" 
+                      size={20} 
+                      color={focusedInput === 'email' ? colors.primary : colors.text.light} 
+                      style={styles.inputIcon}
+                    />
                     <TextInput 
                       placeholder="Enter your email" 
                       placeholderTextColor={colors.text.light}
@@ -163,6 +187,7 @@ const SignupScreen = ({ navigation }) => {
                       }} 
                       style={[
                         styles.textInput,
+                        styles.textInputWithIcon,
                         focusedInput === 'email' && styles.inputFocused,
                         errors.email && styles.inputError
                       ]}
@@ -179,11 +204,17 @@ const SignupScreen = ({ navigation }) => {
                 </View>
                 
                 <View style={styles.inputGroup}>
-                  <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xs}}>
+                  <View style={styles.labelContainer}>
                     <Ionicons name="lock-closed" size={16} color={colors.text.secondary} style={{marginRight: 6}} />
                     <Text style={styles.inputLabel}>Password</Text>
                   </View>
                   <View style={styles.inputContainer}>
+                    <Ionicons 
+                      name="lock-closed" 
+                      size={20} 
+                      color={focusedInput === 'password' ? colors.primary : colors.text.light} 
+                      style={styles.inputIcon}
+                    />
                     <TextInput 
                       placeholder="Create a password (min 6 characters)" 
                       placeholderTextColor={colors.text.light}
@@ -192,9 +223,10 @@ const SignupScreen = ({ navigation }) => {
                         setPassword(text);
                         if (errors.password) setErrors({...errors, password: null});
                       }} 
-                      secureTextEntry 
+                      secureTextEntry={!showPassword}
                       style={[
                         styles.textInput,
+                        styles.textInputWithIcon,
                         focusedInput === 'password' && styles.inputFocused,
                         errors.password && styles.inputError
                       ]}
@@ -204,16 +236,33 @@ const SignupScreen = ({ navigation }) => {
                       editable={!loading}
                       returnKeyType="next"
                     />
+                    <TouchableOpacity 
+                      onPress={() => setShowPassword(!showPassword)} 
+                      style={styles.eyeIcon}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                      <Ionicons 
+                        name={showPassword ? "eye-off" : "eye"} 
+                        size={20} 
+                        color={colors.text.light} 
+                      />
+                    </TouchableOpacity>
                   </View>
                   {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
                 </View>
                 
                 <View style={styles.inputGroup}>
-                  <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: spacing.xs}}>
+                  <View style={styles.labelContainer}>
                     <Ionicons name="lock-closed" size={16} color={colors.text.secondary} style={{marginRight: 6}} />
                     <Text style={styles.inputLabel}>Confirm Password</Text>
                   </View>
                   <View style={styles.inputContainer}>
+                    <Ionicons 
+                      name="lock-closed" 
+                      size={20} 
+                      color={focusedInput === 'confirmPassword' ? colors.primary : colors.text.light} 
+                      style={styles.inputIcon}
+                    />
                     <TextInput 
                       placeholder="Re-enter your password" 
                       placeholderTextColor={colors.text.light}
@@ -222,9 +271,10 @@ const SignupScreen = ({ navigation }) => {
                         setConfirmPassword(text);
                         if (errors.confirmPassword) setErrors({...errors, confirmPassword: null});
                       }} 
-                      secureTextEntry 
+                      secureTextEntry={!showConfirmPassword}
                       style={[
                         styles.textInput,
+                        styles.textInputWithIcon,
                         focusedInput === 'confirmPassword' && styles.inputFocused,
                         errors.confirmPassword && styles.inputError
                       ]}
@@ -235,17 +285,29 @@ const SignupScreen = ({ navigation }) => {
                       onSubmitEditing={handleSignup}
                       returnKeyType="go"
                     />
+                    <TouchableOpacity 
+                      onPress={() => setShowConfirmPassword(!showConfirmPassword)} 
+                      style={styles.eyeIcon}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                      <Ionicons 
+                        name={showConfirmPassword ? "eye-off" : "eye"} 
+                        size={20} 
+                        color={colors.text.light} 
+                      />
+                    </TouchableOpacity>
                   </View>
                   {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
                 </View>
                 
                 <TouchableOpacity 
                   onPress={handleSignup} 
-                  style={[globalStyles.button, styles.signupButton, loading && styles.disabledButton]}
+                  style={[styles.signupButton, loading && styles.disabledButton]}
                   activeOpacity={0.8}
                   disabled={loading}
                 >
-                  <Text style={globalStyles.buttonText}>
+                  <Ionicons name={loading ? "reload" : "person-add"} size={20} color={colors.text.white} style={{marginRight: 8}} />
+                  <Text style={styles.signupButtonText}>
                     {loading ? 'Creating Account...' : 'Create Account'}
                   </Text>
                 </TouchableOpacity>
@@ -297,7 +359,6 @@ const SignupScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   maxWidth: {
     width: '100%',
-    maxWidth: 560,
     alignSelf: 'center',
   },
   scrollContainer: {
@@ -307,20 +368,23 @@ const styles = StyleSheet.create({
   },
   backgroundContainer: {
     flex: 1,
+    width: '100%',
     backgroundColor: colors.background,
     minHeight: '100%',
   },
   container: {
     flex: 1,
+    width: '100%',
     justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
+    paddingHorizontal: rs(spacing.lg),
+    paddingVertical: rs(spacing.xl),
     minHeight: '100%',
   },
   card: {
+    width: '100%',
     backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: spacing.xl,
+    borderRadius: normalize(20),
+    padding: rs(spacing.xl),
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -333,80 +397,106 @@ const styles = StyleSheet.create({
     borderColor: colors.borderLight,
   },
   headerSection: {
+    width: '100%',
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: rs(spacing.xl),
   },
   logoContainer: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: normalize(100),
+    height: normalize(100),
+    borderRadius: normalize(50),
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: rs(spacing.lg),
     shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 10,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: rs(spacing.xs),
   },
   logoIcon: {
     fontSize: 45,
     color: colors.text.white,
   },
   title: {
-    ...typography.h1,
+    ...responsiveTypography.h1,
     color: colors.text.primary,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: rs(spacing.sm),
     fontWeight: '800',
   },
   subtitle: {
-    ...typography.body,
+    ...responsiveTypography.body,
     color: colors.text.secondary,
     textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: spacing.md,
+    lineHeight: normalize(22),
+    marginBottom: rs(spacing.md),
   },
   welcomeBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.primaryLight,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: 20,
-    marginTop: spacing.sm,
+    paddingHorizontal: rs(spacing.md),
+    paddingVertical: rs(spacing.xs),
+    borderRadius: normalize(20),
+    marginTop: rs(spacing.sm),
   },
   badgeText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.primary,
     fontWeight: '600',
   },
   formSection: {
-    gap: spacing.lg,
+    width: '100%',
+    gap: rs(spacing.lg),
   },
   inputGroup: {
-    gap: spacing.sm,
+    width: '100%',
+    gap: rs(spacing.sm),
   },
   inputLabel: {
-    ...typography.body,
+    ...responsiveTypography.body,
     color: colors.text.primary,
     fontWeight: '600',
-    marginBottom: spacing.xs,
+    marginBottom: rs(spacing.xs),
   },
   inputContainer: {
+    width: '100%',
     position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  inputIcon: {
+    position: 'absolute',
+    left: rs(spacing.md),
+    zIndex: 1,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: rs(spacing.md),
+    zIndex: 1,
+  },
+  textInputWithIcon: {
+    paddingLeft: rs(spacing.xl + spacing.lg),
+    paddingRight: rs(spacing.xl + spacing.lg),
   },
   textInput: {
-    ...globalStyles.input,
-    paddingLeft: spacing.lg,
-    paddingRight: spacing.lg,
-    paddingVertical: spacing.md,
-    fontSize: 16,
+    flex: 1,
+    backgroundColor: colors.surface,
+    paddingLeft: rs(spacing.lg),
+    paddingRight: rs(spacing.lg),
+    paddingVertical: rs(spacing.md + 2),
+    fontSize: normalize(16),
     borderWidth: 2,
     borderColor: colors.borderLight,
-    borderRadius: 16,
-    backgroundColor: colors.background,
+    borderRadius: normalize(16),
+    color: colors.text.primary,
     shadowColor: colors.shadow.light,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -425,33 +515,45 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   errorText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.danger,
-    marginTop: spacing.xs,
-    marginLeft: spacing.sm,
+    marginTop: rs(spacing.xs),
+    marginLeft: rs(spacing.sm),
   },
   signupButton: {
+    flexDirection: 'row',
     backgroundColor: colors.success,
-    marginTop: spacing.md,
+    paddingVertical: rs(spacing.md + 4),
+    borderRadius: normalize(16),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: rs(spacing.md),
     shadowColor: colors.success,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  signupButtonText: {
+    ...responsiveTypography.body,
+    color: colors.text.white,
+    fontWeight: '700',
+    fontSize: normalize(16),
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
   loginLink: {
     alignItems: 'center',
-    paddingVertical: spacing.md,
+    paddingVertical: rs(spacing.md),
   },
   loginText: {
-    ...typography.body,
-    color: colors.primary,
+    ...responsiveTypography.body,
+    color: colors.text.secondary,
   },
   loginTextBold: {
-    fontWeight: '600',
+    color: colors.primary,
+    fontWeight: '700',
   },
   divider: {
     flexDirection: 'row',
@@ -501,37 +603,40 @@ const styles = StyleSheet.create({
     color: colors.text.light,
   },
   featuresPreview: {
+    width: '100%',
     backgroundColor: colors.primaryLight,
-    borderRadius: 20,
-    padding: spacing.lg,
+    borderRadius: normalize(20),
+    padding: rs(spacing.lg),
     alignItems: 'center',
-    marginTop: spacing.lg,
+    marginTop: rs(spacing.lg),
   },
   featuresTitle: {
-    ...typography.h4,
+    ...responsiveTypography.h4,
     color: colors.primary,
     fontWeight: '700',
-    marginBottom: spacing.md,
+    marginBottom: rs(spacing.md),
     textAlign: 'center',
   },
   featuresList: {
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    width: '100%',
+    justifyContent: 'space-between',
+    gap: rs(spacing.sm),
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
-    width: '45%',
+    marginBottom: rs(spacing.sm),
+    width: isSmallScreen ? '48%' : '48%',
+    minWidth: isSmallScreen ? '45%' : '45%',
   },
   featureIcon: {
-    fontSize: 24,
-    marginBottom: spacing.xs,
+    fontSize: normalize(24),
+    marginBottom: rs(spacing.xs),
   },
   featureText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.text.primary,
     fontWeight: '600',
     textAlign: 'center',

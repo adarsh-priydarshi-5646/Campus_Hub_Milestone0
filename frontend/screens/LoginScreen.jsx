@@ -12,13 +12,16 @@ import {
   StyleSheet,
   Alert
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { globalStyles, colors, typography, spacing, responsiveTypography, responsiveSpacing, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import Button3D from '../components/3DButton';
 import Card3D from '../components/3DCard';
 import Icon3D from '../components/3DIcon';
 import AnimatedBackground from '../components/AnimatedBackground';
+import Toast from '../components/Toast';
 import { useAuth } from '../contexts/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
@@ -27,6 +30,8 @@ const LoginScreen = ({ navigation }) => {
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
   const { login } = useAuth();
 
   const validateEmail = (email) => {
@@ -54,7 +59,7 @@ const LoginScreen = ({ navigation }) => {
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      Alert.alert('Validation Error', Object.values(newErrors)[0]);
+      setToast({ visible: true, message: Object.values(newErrors)[0], type: 'error' });
       return;
     }
 
@@ -63,10 +68,10 @@ const LoginScreen = ({ navigation }) => {
     setLoading(false);
 
     if (result.success) {
-      Alert.alert('Success', 'Login successful! Welcome back! 🎉');
-      setTimeout(() => navigation.replace('Home'), 500);
+      setToast({ visible: true, message: 'Login successful! Welcome back!', type: 'success' });
+      setTimeout(() => navigation.replace('Home'), 1500);
     } else {
-      Alert.alert('Login Failed', result.error || 'Unable to login. Please check your credentials.');
+      setToast({ visible: true, message: result.error || 'Unable to login. Please check your credentials.', type: 'error' });
     }
   };
 
@@ -75,6 +80,12 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={globalStyles.safeArea}>
       <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
+      <Toast 
+        visible={toast.visible} 
+        message={toast.message} 
+        type={toast.type}
+        onHide={() => setToast({ ...toast, visible: false })}
+      />
       <AnimatedBackground variant="gradient">
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -93,16 +104,37 @@ const LoginScreen = ({ navigation }) => {
                 
                 {/* Header Section */}
                 <View style={styles.headerSection}>
-                  <Icon3D 
-                    emoji="🎓" 
-                    size="xxl" 
-                    variant="primary" 
-                    style={styles.logoIcon}
-                  />
+                  <View style={styles.logoContainer}>
+                    <LinearGradient
+                      colors={[colors.primary, '#8b5cf6']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.logoGradient}
+                    >
+                      <Ionicons name="school" size={56} color={colors.text.white} />
+                    </LinearGradient>
+                  </View>
                   <Text style={styles.title}>Welcome Back!</Text>
                   <Text style={styles.subtitle}>Sign in to your MyCampusHub account</Text>
                   <View style={styles.welcomeBadge}>
-                    <Text style={styles.badgeText}>✨ Your Campus, Your Way</Text>
+                    <Ionicons name="sparkles" size={16} color={colors.primary} style={{marginRight: 6}} />
+                    <Text style={styles.badgeText}>Your Campus, Your Way</Text>
+                  </View>
+                  
+                  {/* Quick Info Pills */}
+                  <View style={styles.infoPills}>
+                    <View style={styles.infoPill}>
+                      <Ionicons name="shield-checkmark" size={14} color={colors.success} style={{marginRight: 4}} />
+                      <Text style={styles.infoPillText}>Secure</Text>
+                    </View>
+                    <View style={styles.infoPill}>
+                      <Ionicons name="flash" size={14} color={colors.warning} style={{marginRight: 4}} />
+                      <Text style={styles.infoPillText}>Fast</Text>
+                    </View>
+                    <View style={styles.infoPill}>
+                      <Ionicons name="heart" size={14} color={colors.error} style={{marginRight: 4}} />
+                      <Text style={styles.infoPillText}>Easy</Text>
+                    </View>
                   </View>
                 </View>
 
@@ -111,8 +143,17 @@ const LoginScreen = ({ navigation }) => {
                   <View style={styles.formSection}>
                     {/* Email */}
                     <View style={styles.inputGroup}>
-                      <Text style={styles.inputLabel}>📧 Email Address</Text>
+                      <View style={styles.labelContainer}>
+                        <Ionicons name="mail" size={16} color={colors.text.secondary} style={{marginRight: 6}} />
+                        <Text style={styles.inputLabel}>Email Address</Text>
+                      </View>
                       <View style={styles.inputContainer}>
+                        <Ionicons 
+                          name="mail" 
+                          size={20} 
+                          color={focusedInput === 'email' ? colors.primary : colors.text.light} 
+                          style={styles.inputIcon}
+                        />
                         <TextInput 
                           placeholder="Enter your email" 
                           placeholderTextColor={colors.text.light}
@@ -123,6 +164,7 @@ const LoginScreen = ({ navigation }) => {
                           }} 
                           style={[
                             styles.textInput,
+                            styles.textInputWithIcon,
                             focusedInput === 'email' && styles.inputFocused,
                             errors.email && styles.inputError
                           ]}
@@ -139,8 +181,17 @@ const LoginScreen = ({ navigation }) => {
                     
                     {/* Password */}
                     <View style={styles.inputGroup}>
-                      <Text style={styles.inputLabel}>🔒 Password</Text>
+                      <View style={styles.labelContainer}>
+                        <Ionicons name="lock-closed" size={16} color={colors.text.secondary} style={{marginRight: 6}} />
+                        <Text style={styles.inputLabel}>Password</Text>
+                      </View>
                       <View style={styles.inputContainer}>
+                        <Ionicons 
+                          name="lock-closed" 
+                          size={20} 
+                          color={focusedInput === 'password' ? colors.primary : colors.text.light} 
+                          style={styles.inputIcon}
+                        />
                         <TextInput 
                           placeholder="Enter your password" 
                           placeholderTextColor={colors.text.light}
@@ -149,9 +200,10 @@ const LoginScreen = ({ navigation }) => {
                             setPassword(text);
                             if (errors.password) setErrors({...errors, password: null});
                           }} 
-                          secureTextEntry 
+                          secureTextEntry={!showPassword}
                           style={[
                             styles.textInput,
+                            styles.textInputWithIcon,
                             focusedInput === 'password' && styles.inputFocused,
                             errors.password && styles.inputError
                           ]}
@@ -162,6 +214,17 @@ const LoginScreen = ({ navigation }) => {
                           onSubmitEditing={handleLogin}
                           returnKeyType="go"
                         />
+                        <TouchableOpacity 
+                          onPress={() => setShowPassword(!showPassword)} 
+                          style={styles.eyeIcon}
+                          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                        >
+                          <Ionicons 
+                            name={showPassword ? "eye-off" : "eye"} 
+                            size={20} 
+                            color={colors.text.light} 
+                          />
+                        </TouchableOpacity>
                       </View>
                       {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
                     </View>
@@ -172,14 +235,15 @@ const LoginScreen = ({ navigation }) => {
                     </TouchableOpacity>
                     
                     {/* Sign In Button */}
-                    <Button3D 
-                      title={loading ? '🔄 Signing In...' : '🚀 Sign In'}
+                    <TouchableOpacity 
                       onPress={handleLogin} 
-                      variant="primary"
-                      size="large"
+                      style={[styles.loginButton, loading && styles.disabledButton]}
+                      activeOpacity={0.8}
                       disabled={loading}
-                      style={styles.loginButton}
-                    />
+                    >
+                      <Ionicons name={loading ? "reload" : "log-in"} size={20} color={colors.text.white} style={{marginRight: 8}} />
+                      <Text style={styles.loginButtonText}>{loading ? 'Signing In...' : 'Sign In'}</Text>
+                    </TouchableOpacity>
                     
                     {/* Signup Link */}
                     <TouchableOpacity 
@@ -195,27 +259,27 @@ const LoginScreen = ({ navigation }) => {
                 </Card3D>
 
                 {/* Features Preview */}
-                <Card3D variant="gradient" elevation="medium" style={styles.featuresPreview}>
-                  <Text style={styles.featuresTitle}>What's inside MyCampusHub?</Text>
+                <View style={styles.featuresPreview}>
+                  <Text style={styles.featuresTitle}>What you'll get with MyCampusHub</Text>
                   <View style={styles.featuresList}>
                     <View style={styles.featureItem}>
-                      <Icon3D emoji="📚" size="medium" variant="primary" />
-                      <Text style={styles.featureText}>Academic Resources</Text>
+                      <Ionicons name="book" size={20} color={colors.primary} style={{marginRight: 8}} />
+                      <Text style={styles.featureText}>Study Materials</Text>
                     </View>
                     <View style={styles.featureItem}>
-                      <Icon3D emoji="👨‍🏫" size="medium" variant="success" />
-                      <Text style={styles.featureText}>Faculty Directory</Text>
+                      <FontAwesome5 name="chalkboard-teacher" size={18} color={colors.primary} style={{marginRight: 8}} />
+                      <Text style={styles.featureText}>Faculty Connect</Text>
                     </View>
                     <View style={styles.featureItem}>
-                      <Icon3D emoji="📅" size="medium" variant="warning" />
+                      <MaterialIcons name="event" size={20} color={colors.primary} style={{marginRight: 8}} />
                       <Text style={styles.featureText}>Event Updates</Text>
                     </View>
                     <View style={styles.featureItem}>
-                      <Icon3D emoji="🍽️" size="medium" variant="danger" />
+                      <MaterialIcons name="restaurant-menu" size={20} color={colors.primary} style={{marginRight: 8}} />
                       <Text style={styles.featureText}>Mess Menu</Text>
                     </View>
                   </View>
-                </Card3D>
+                </View>
               </View>
             </View>
           </ScrollView>
@@ -228,7 +292,6 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   maxWidth: {
     width: '100%',
-    maxWidth: 560,
     alignSelf: 'center',
   },
   scrollContainer: {
@@ -238,78 +301,150 @@ const styles = StyleSheet.create({
   },
   backgroundContainer: {
     flex: 1,
+    width: '100%',
     backgroundColor: colors.background,
     minHeight: '100%',
   },
   container: {
     flex: 1,
+    width: '100%',
     justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
+    paddingHorizontal: rs(spacing.lg),
+    paddingVertical: rs(spacing.xl),
     minHeight: '100%',
   },
   headerSection: {
+    width: '100%',
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: rs(spacing.xl),
   },
-  logoIcon: {
-    marginBottom: spacing.lg,
+  logoContainer: {
+    width: normalize(100),
+    height: normalize(100),
+    borderRadius: normalize(50),
+    marginBottom: rs(spacing.lg),
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 12,
+    overflow: 'hidden',
+  },
+  logoGradient: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: rs(spacing.xs),
+  },
+  infoPills: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: rs(spacing.sm),
+    marginTop: rs(spacing.md),
+  },
+  infoPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    paddingHorizontal: rs(spacing.sm),
+    paddingVertical: rs(spacing.xs / 2),
+    borderRadius: normalize(12),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+  },
+  infoPillText: {
+    ...responsiveTypography.bodySmall,
+    color: colors.text.secondary,
+    fontWeight: '600',
+    fontSize: normalize(11),
   },
   title: {
-    ...typography.h1,
+    ...responsiveTypography.h1,
     color: colors.text.primary,
     textAlign: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: rs(spacing.sm),
     fontWeight: '800',
   },
   subtitle: {
-    ...typography.body,
+    ...responsiveTypography.body,
     color: colors.text.secondary,
     textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: spacing.md,
+    lineHeight: normalize(22),
+    marginBottom: rs(spacing.md),
   },
   welcomeBadge: {
     backgroundColor: colors.primaryLight,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: 20,
-    marginTop: spacing.sm,
+    paddingHorizontal: rs(spacing.md),
+    paddingVertical: rs(spacing.xs),
+    borderRadius: normalize(20),
+    marginTop: rs(spacing.sm),
   },
   badgeText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.primary,
     fontWeight: '600',
   },
   card: {
-    marginBottom: spacing.xl,
-    marginHorizontal: spacing.sm,
+    width: '100%',
+    marginBottom: rs(spacing.xl),
+    marginHorizontal: 0,
   },
   formSection: {
-    gap: spacing.lg,
+    width: '100%',
+    gap: rs(spacing.lg),
   },
   inputGroup: {
-    gap: spacing.sm,
+    width: '100%',
+    gap: rs(spacing.sm),
   },
   inputLabel: {
-    ...typography.body,
+    ...responsiveTypography.body,
     color: colors.text.primary,
     fontWeight: '600',
-    marginBottom: spacing.xs,
+    marginBottom: rs(spacing.xs),
   },
   inputContainer: {
+    width: '100%',
     position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  inputIcon: {
+    position: 'absolute',
+    left: rs(spacing.md),
+    zIndex: 1,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: rs(spacing.md),
+    zIndex: 1,
+  },
+  textInputWithIcon: {
+    paddingLeft: rs(spacing.xl + spacing.lg),
+    paddingRight: rs(spacing.xl + spacing.lg),
   },
   textInput: {
-    ...globalStyles.input,
-    paddingLeft: spacing.lg,
-    paddingRight: spacing.lg,
-    paddingVertical: spacing.md,
-    fontSize: 16,
+    flex: 1,
+    backgroundColor: colors.surface,
+    paddingLeft: rs(spacing.lg),
+    paddingRight: rs(spacing.lg),
+    paddingVertical: rs(spacing.md + 2),
+    fontSize: normalize(16),
     borderWidth: 2,
     borderColor: colors.borderLight,
-    borderRadius: 16,
-    backgroundColor: colors.background,
+    borderRadius: normalize(16),
+    color: colors.text.primary,
     shadowColor: colors.shadow.light,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -328,29 +463,49 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   errorText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.danger,
-    marginTop: spacing.xs,
-    marginLeft: spacing.sm,
+    marginTop: rs(spacing.xs),
+    marginLeft: rs(spacing.sm),
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginTop: spacing.xs,
+    marginTop: rs(spacing.xs),
   },
   forgotPasswordText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.primary,
     fontWeight: '600',
   },
   loginButton: {
-    marginTop: spacing.md,
+    flexDirection: 'row',
+    backgroundColor: colors.primary,
+    paddingVertical: rs(spacing.md + 4),
+    borderRadius: normalize(16),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: rs(spacing.md),
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  loginButtonText: {
+    ...responsiveTypography.body,
+    color: colors.text.white,
+    fontWeight: '700',
+    fontSize: normalize(16),
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
   signupLink: {
     alignItems: 'center',
-    paddingVertical: spacing.md,
+    paddingVertical: rs(spacing.md),
   },
   signupText: {
-    ...typography.body,
+    ...responsiveTypography.body,
     color: colors.text.secondary,
   },
   signupTextBold: {
@@ -380,29 +535,36 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   featuresPreview: {
+    width: '100%',
+    backgroundColor: colors.primaryLight,
+    borderRadius: normalize(20),
+    padding: rs(spacing.lg),
     alignItems: 'center',
-    marginHorizontal: spacing.sm,
+    marginTop: rs(spacing.lg),
   },
   featuresTitle: {
-    ...typography.h4,
+    ...responsiveTypography.h4,
     color: colors.primary,
     fontWeight: '700',
-    marginBottom: spacing.md,
+    marginBottom: rs(spacing.md),
     textAlign: 'center',
   },
   featuresList: {
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    width: '100%',
+    justifyContent: 'space-between',
+    gap: rs(spacing.sm),
   },
   featureItem: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.sm,
-    width: '45%',
+    marginBottom: rs(spacing.sm),
+    width: isSmallScreen ? '48%' : '48%',
+    minWidth: isSmallScreen ? '45%' : '45%',
   },
   featureText: {
-    ...typography.bodySmall,
+    ...responsiveTypography.bodySmall,
     color: colors.text.primary,
     fontWeight: '600',
     textAlign: 'center',

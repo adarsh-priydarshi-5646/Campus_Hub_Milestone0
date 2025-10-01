@@ -16,7 +16,8 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/AuthContext';
 import { apiUpdateProfile } from '../services/api';
@@ -369,18 +370,24 @@ const ProfileScreen = ({ navigation }) => {
             <FontAwesome5 name="graduation-cap" size={20} color={colors.primary} />
             <Text style={styles.cardTitle}>Academic Information</Text>
           </View>
-          <View style={styles.infoGrid}>
+          
+          {/* Row 1: Branch & Batch */}
+          <View style={styles.infoRow}>
             <View style={styles.infoItem}>
               <Text style={styles.infoLabel}>Branch</Text>
               <Text style={styles.infoValue}>{studentProfile.branch}</Text>
             </View>
             <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Semester</Text>
-              <Text style={styles.infoValue}>{studentProfile.semester}</Text>
-            </View>
-            <View style={styles.infoItem}>
               <Text style={styles.infoLabel}>Batch</Text>
               <Text style={styles.infoValue}>{studentProfile.batch}</Text>
+            </View>
+          </View>
+          
+          {/* Row 2: Semester & Section */}
+          <View style={styles.infoRow}>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Semester</Text>
+              <Text style={styles.infoValue}>{studentProfile.semester}</Text>
             </View>
             <View style={styles.infoItem}>
               <Text style={styles.infoLabel}>Section</Text>
@@ -904,19 +911,21 @@ const styles = StyleSheet.create({
   addButton: {
     padding: spacing.xs,
   },
-  infoGrid: {
+  infoRow: {
+    width: '100%',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     justifyContent: 'space-between',
-    gap: spacing.md,
+    marginBottom: rs(spacing.md),
   },
   infoItem: {
-    width: '48%',
+    width: isSmallScreen ? '100%' : '48.5%',
     backgroundColor: colors.background,
     padding: spacing.md,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: colors.border,
+    marginBottom: isSmallScreen ? rs(spacing.sm) : 0,
   },
   infoLabel: {
     ...typography.bodySmall,
@@ -930,19 +939,20 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   statsGrid: {
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: spacing.md,
   },
   statCard: {
-    width: '48%',
+    width: isSmallScreen ? '48%' : '48.5%',
     backgroundColor: colors.background,
-    padding: spacing.md,
-    borderRadius: 16,
+    padding: rs(spacing.md),
+    borderRadius: normalize(16),
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border,
+    marginBottom: rs(spacing.md),
   },
   statIconContainer: {
     width: 56,

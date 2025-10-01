@@ -12,7 +12,8 @@ import {
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchEvents } from '../services/api';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import AnimatedCard from '../components/AnimatedCard';
 
@@ -272,12 +273,13 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   listContainer: {
-    paddingBottom: spacing.xl,
+    paddingBottom: rs(spacing.xl),
   },
   eventCard: {
-    marginBottom: spacing.lg,
-    padding: spacing.lg,
-    borderRadius: 20,
+    width: '100%',
+    marginBottom: rs(spacing.lg),
+    padding: rs(spacing.lg),
+    borderRadius: normalize(20),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,

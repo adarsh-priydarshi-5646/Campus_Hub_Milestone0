@@ -12,7 +12,8 @@ import {
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchMess } from '../services/api';
-import { globalStyles, colors, typography, spacing } from '../styles/globalStyles';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { wp, hp, normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -237,6 +238,7 @@ const MessDetailsScreen = ({ navigation }) => {
             <Text style={styles.sectionTitle}>Weekly Menu</Text>
           </View>
 
+          <View style={styles.weeklyMenuGrid}>
           {messData.map((day, index) => {
             const isToday = day.day === selectedDay;
             const dayColor = day.color || colors.primary;
@@ -381,6 +383,7 @@ const MessDetailsScreen = ({ navigation }) => {
               </View>
             );
           })}
+          </View>
         </View>
 
         {/* Important Information */}
@@ -395,7 +398,8 @@ const MessDetailsScreen = ({ navigation }) => {
               <Ionicons name="information-circle" size={24} color={colors.text.white} />
               <Text style={styles.infoTitle}>Important Information</Text>
             </View>
-            <View style={styles.infoGrid}>
+            {/* Row 1: Dietary Options & Special Days */}
+            <View style={styles.infoRow}>
               <View style={styles.infoItem}>
                 <MaterialCommunityIcons name="food-variant" size={28} color={colors.primary} />
                 <Text style={styles.infoItemTitle}>Dietary Options</Text>
@@ -406,6 +410,10 @@ const MessDetailsScreen = ({ navigation }) => {
                 <Text style={styles.infoItemTitle}>Special Days</Text>
                 <Text style={styles.infoItemText}>Extra items on weekends</Text>
               </View>
+            </View>
+            
+            {/* Row 2: Hygiene & Contact */}
+            <View style={styles.infoRow}>
               <View style={styles.infoItem}>
                 <MaterialIcons name="clean-hands" size={28} color={colors.primary} />
                 <Text style={styles.infoItemTitle}>Hygiene</Text>
@@ -526,19 +534,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   timingsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: spacing.md,
+    width: '100%',
+    flexDirection: 'column',
   },
   timingItem: {
-    width: '48%',
+    width: '100%',
     backgroundColor: colors.background,
-    borderRadius: 12,
-    padding: spacing.md,
+    borderRadius: normalize(12),
+    padding: rs(spacing.md),
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border,
+    marginBottom: rs(spacing.md),
   },
   timingLabel: {
     ...typography.body,
@@ -554,6 +561,12 @@ const styles = StyleSheet.create({
   menuSection: {
     marginBottom: spacing.xl,
   },
+  weeklyMenuGrid: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -566,8 +579,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   dayCard: {
-    marginBottom: spacing.xl,
-    borderRadius: 20,
+    width: '100%',
+    marginBottom: rs(spacing.xl),
+    borderRadius: normalize(20),
     overflow: 'hidden',
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 6 },
@@ -657,19 +671,22 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   mealsContainer: {
-    gap: spacing.md,
+    width: '100%',
+    flexDirection: 'column',
   },
   mealCard: {
+    width: '100%',
     flexDirection: 'row',
     backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: spacing.md,
+    borderRadius: normalize(16),
+    padding: rs(spacing.md),
     borderLeftWidth: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    marginBottom: rs(spacing.md),
   },
   mealIconBox: {
     width: 50,
@@ -744,19 +761,36 @@ const styles = StyleSheet.create({
     color: colors.text.white,
     fontWeight: '800',
   },
-  infoGrid: {
+  timingsGrid: {
+    width: '100%',
+    flexDirection: 'column',
+  },
+  timingItem: {
+    width: '100%',
+    backgroundColor: colors.background,
+    borderRadius: normalize(12),
+    padding: rs(spacing.md),
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: rs(spacing.md),
+  },
+  infoRow: {
+    width: '100%',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     justifyContent: 'space-between',
-    gap: spacing.md,
+    marginBottom: rs(spacing.md),
   },
   infoItem: {
-    width: '48%',
+    width: isSmallScreen ? '100%' : '48.5%',
     backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: spacing.md,
+    borderRadius: normalize(16),
+    padding: rs(spacing.lg),
     alignItems: 'center',
-    minHeight: 120,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+    marginBottom: isSmallScreen ? rs(spacing.md) : 0,
   },
   infoItemTitle: {
     ...typography.body,
