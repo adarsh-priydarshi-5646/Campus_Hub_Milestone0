@@ -20,11 +20,9 @@ A **production-ready, fully-featured** college management system built with Reac
 
 ### 🎨 **Professional UI Design**
 - **React Native Icons** - 150+ professional icons (Ionicons, MaterialIcons, FontAwesome5)
-- **No Emojis** - All replaced with React icons for professional look
 - **Gradient Backgrounds** - Beautiful gradients throughout
 - **Shadow System** - Multiple elevation levels
 - **Responsive Design** - Works on all screen sizes
-- **Clean Code** - No comments, production-ready
 
 ## 🚀 **Core Features**
 
@@ -34,7 +32,7 @@ A **production-ready, fully-featured** college management system built with Reac
 3. **🏫 College Details** - Newton School of Technology complete info
 4. **🍽️ Mess Details** - 7-day weekly menu with timings
 5. **📚 Semester Details** - Subject cards with React icons
-6. **🗺️ Study Roadmap** - Smart text parsing, emoji-free
+6. **🗺️ Study Roadmap** - Smart text parsing
 7. **📅 Events** - Category detection, gradient backgrounds
 8. **👨‍🏫 Faculty** - Faculty list with department filter
 9. **👨‍🏫 Faculty Details** - Complete faculty information
@@ -289,8 +287,8 @@ This project is licensed under the MIT License.
 ## 👨‍💻 Author
 
 **Adarsh Priydarshi**
-- GitHub: [@adarshpriydarshi](https://github.com/adarshpriydarshi)
-- LinkedIn: [Adarsh Priydarshi](https://linkedin.com/in/adarshpriydarshi)
+- GitHub: [@adarshpriydarshi](https://github.com/adarsh-priydarshi-5646)
+- LinkedIn: [Adarsh Priydarshi](https://www.linkedin.com/in/adarsh-p1/)
 
 ## 🆘 Support
 
