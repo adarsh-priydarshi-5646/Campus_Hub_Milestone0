@@ -7,13 +7,12 @@ import {
   StatusBar,
   StyleSheet,
   RefreshControl,
-  TouchableOpacity
 } from 'react-native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchMess } from '../services/api';
-import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
+import { globalStyles, colors, typography, spacing,isSmallScreen } from '../styles/globalStyles';
+import {normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -25,7 +24,7 @@ const MessDetailsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
 
-  // Enhanced Mess Data with more details
+
   const enhancedMessData = [
     {
       day: 'Monday',

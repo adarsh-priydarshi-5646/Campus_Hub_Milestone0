@@ -9,8 +9,7 @@ import {
   StyleSheet
 } from 'react-native';
 import { fetchSemesterDetails } from '../services/api';
-import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
+import { globalStyles, colors, typography, spacing, } from '../styles/globalStyles';
 import BackButton from '../components/BackButton';
 
 const SemesterDetailsScreen = ({ route, navigation }) => {

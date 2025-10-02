@@ -10,12 +10,10 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
-  ActivityIndicator
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { fetchTeacherById } from '../services/api';
-import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
+import { globalStyles, colors, typography, spacing, } from '../styles/globalStyles';
 import BackButton from '../components/BackButton';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingSpinner from '../components/LoadingSpinner';

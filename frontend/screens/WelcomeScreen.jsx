@@ -12,13 +12,10 @@ import {
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
-import Button3D from '../components/3DButton';
-import Card3D from '../components/3DCard';
-import Icon3D from '../components/3DIcon';
+import { globalStyles, colors, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { normalize, rs } from '../utils/responsive';
+
 import AnimatedBackground from '../components/AnimatedBackground';
-import FloatingActionButton from '../components/FloatingActionButton';
 
 const { width } = Dimensions.get('window');
 

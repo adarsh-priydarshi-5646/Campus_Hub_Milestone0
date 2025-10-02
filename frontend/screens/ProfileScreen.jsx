@@ -16,11 +16,10 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
+import { globalStyles, colors, typography, spacing, isSmallScreen } from '../styles/globalStyles';
+import { normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/AuthContext';
-import { apiUpdateProfile } from '../services/api';
 
 const ProfileScreen = ({ navigation }) => {
   const { user, logout, updateUser } = useAuth();

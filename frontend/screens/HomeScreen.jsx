@@ -2,20 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { 
   View, 
   Text, 
-  FlatList, 
   TouchableOpacity, 
   SafeAreaView, 
   StatusBar, 
-  RefreshControl,
   StyleSheet,
   Alert,
   ScrollView
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { fetchSemesters } from '../services/api';
-import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
-import BackButton from '../components/BackButton';
+import { globalStyles, colors, typography, spacing, isSmallScreen } from '../styles/globalStyles';
+import { normalize, rs } from '../utils/responsive';
 import AnimatedButton from '../components/AnimatedButton';
 import AnimatedCard from '../components/AnimatedCard';
 import { useAuth } from '../contexts/AuthContext';

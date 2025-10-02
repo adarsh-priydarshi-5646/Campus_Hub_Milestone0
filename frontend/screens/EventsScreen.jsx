@@ -12,8 +12,8 @@ import {
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchEvents } from '../services/api';
-import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
+import { globalStyles, colors, typography, spacing,} from '../styles/globalStyles';
+import {normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
 import AnimatedCard from '../components/AnimatedCard';
 

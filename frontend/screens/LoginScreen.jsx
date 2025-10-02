@@ -10,16 +10,13 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Alert
 } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { globalStyles, colors, typography, spacing, responsiveTypography, responsiveSpacing, isSmallScreen } from '../styles/globalStyles';
-import { wp, hp, normalize, rs } from '../utils/responsive';
+import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
+import { normalize, rs } from '../utils/responsive';
 import BackButton from '../components/BackButton';
-import Button3D from '../components/3DButton';
 import Card3D from '../components/3DCard';
-import Icon3D from '../components/3DIcon';
 import AnimatedBackground from '../components/AnimatedBackground';
 import Toast from '../components/Toast';
 import { useAuth } from '../contexts/AuthContext';
