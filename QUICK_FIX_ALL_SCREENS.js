@@ -1,17 +1,11 @@
-/**
- * सभी Screens को Responsive बनाने के लिए Quick Fix Template
- * 
- * हर screen में ये changes apply करें:
- */
-
 // ============================================
-// 1. IMPORTS में ADD करें
+// 1. IMPORTS
 // ============================================
 import { globalStyles, colors, typography, spacing, responsiveTypography, isSmallScreen } from '../styles/globalStyles';
 import { wp, hp, normalize, rs } from '../utils/responsive';
 
 // ============================================
-// 2. STYLES में REPLACE करें
+// 2. STYLES
 // ============================================
 
 const styles = StyleSheet.create({
@@ -353,65 +347,5 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-
-// ============================================
-// USAGE EXAMPLES
-// ============================================
-
-/**
- * 2-Column Grid Example (Facilities, Departments, etc.)
- * 
- * <View style={styles.facilitiesContainer}>
- *   <View style={styles.facilitiesGrid}>
- *     {facilities.map((item) => (
- *       <View key={item.id} style={styles.facilityCard}>
- *         {/* Content *\/}
- *       </View>
- *     ))}
- *   </View>
- * </View>
- */
-
-/**
- * 4-Column Grid Example (Stats)
- * 
- * <View style={styles.statsContainer}>
- *   <View style={styles.statsGrid}>
- *     {stats.map((stat) => (
- *       <View key={stat.id} style={styles.statCard}>
- *         {/* Content *\/}
- *       </View>
- *     ))}
- *   </View>
- * </View>
- */
-
-/**
- * Skills/Tags Horizontal Wrap
- * 
- * <View style={styles.skillsContainer}>
- *   {skills.map((skill, index) => (
- *     <View key={index} style={styles.skillTag}>
- *       <Text style={styles.skillText}>{skill}</Text>
- *     </View>
- *   ))}
- * </View>
- */
-
-/**
- * Full Width Subject Cards
- * 
- * <View style={styles.subjectsContainer}>
- *   {subjects.map((subject) => (
- *     <View key={subject.id} style={styles.subjectCard}>
- *       {/* Content *\/}
- *     </View>
- *   ))}
- * </View>
- */
-
-// Export करने की जरूरत नहीं - यह सिर्फ एक reference/template file है
-// इस file को directly import न करें
-// बस styles को copy करके अपने screens में paste करें
 
 export default {};

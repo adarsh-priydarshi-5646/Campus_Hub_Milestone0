@@ -1,6 +1,5 @@
 const prisma = require('../config/db.config');
 
-// Get all teachers
 const getFaculty = async (req, res) => {
   try {
     const teachers = await prisma.teacher.findMany();
@@ -11,7 +10,6 @@ const getFaculty = async (req, res) => {
   }
 };
 
-// Get teacher by ID
 const getTeacherById = async (req, res) => {
   try {
     const { id } = req.params;
